@@ -99,18 +99,17 @@ export default {
         loadEntry(){
             //llamar entry by id
             let entry;
-
             if ( this.id === 'new' ) {
                 entry = {
                     text:'',
                     date: new Date().getTime(),
                 }
-                
             } else {
                 entry = this.getEntryById(this.id)
                 if( !entry ) return this.$router.push( {name: 'no-entry'})
             }
             this.entry = entry
+            this.localImage = null
         },
         async saveEntry(){
             new Swal({
@@ -119,11 +118,8 @@ export default {
             })
 
             Swal.showLoading();
-
             const picture = await uploadImage( this.file)
             this.entry.picture = picture
-            //console.log(picture);
-
             if( this.entry.id){
                 await this.updateEntry(this.entry)
             }else{
@@ -177,14 +173,11 @@ export default {
         },
         onSelectImage(){
             this.$refs.imageSelector.click()
-
         }
-
 
     },
     created(){
         this.loadEntry()
-        //console.log(this.id);
     },
     watch:{
         id(){
